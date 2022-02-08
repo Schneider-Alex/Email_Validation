@@ -10,11 +10,8 @@ def homepage():
 @app.route('/saveemail', methods=['POST'])
 def addemail():
     if not email.Email.validate_email(request.form):
-        # we redirect to the template with the form.
         return redirect('/')
-    # ... do other things
     else:
-        return redirect('/dashboard')
         data = {
             'email' : request.form['email']
         }

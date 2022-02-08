@@ -1,5 +1,6 @@
 from flask_app.config.mysqlconnection import connectToMySQL
-from flask_app.models import emai
+from flask_app.models import email
+from flask import flash
 import re	# the regex module
 # create a regular expression object that we'll use later   
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
@@ -15,7 +16,12 @@ class Email:
     @staticmethod
     def validate_email( email ):
         is_valid = True
-        if not EMAIL_REGEX.match(email['email']): 
+        query = """SELECT * FROM emails WHERE email =  %(email)s"""
+        results = connectToMySQL('email_schema').query_db(query, email)
+        if len(results) >= 1:
+            flash("email address already in use!")
+            is_valid = False
+        elif not EMAIL_REGEX.match(email['email']): 
             flash("Invalid email address!")
             is_valid = False
         return is_valid
@@ -38,3 +44,6 @@ class Email:
         VALUES (%(email)s, NOW() , NOW());"""
         # data is a dictionary that will be passed into the save method from server.py
         return connectToMySQL('email_schema').query_db( query, data )
+    
+    
+    

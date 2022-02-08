@@ -33,6 +33,7 @@
     {%if all_emails%}
         {%for email in all_emails%}
         <p>{{email.email}}</p>
+        <p>Created at: {{email.created_at}}</p>
         {%endfor%}
     {%endif%}
 </body>
